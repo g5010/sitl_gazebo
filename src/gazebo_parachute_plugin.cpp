@@ -71,12 +71,23 @@ void ParachutePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
 
 }
 
+void ParachutePlugin::OnUpdate(const common::UpdateInfo&){
+
+}
+
+
 void ParachutePlugin::TriggerCallback(const boost::shared_ptr<const msgs::Int> &_msg){
   gzwarn << "Parachute trigger callback: " << _msg->data() << "\n";
   int enable = _msg->data();
-  // if(enable)
-  //   startStreaming();
-  // else
-  //   stopStreaming();
+  if(enable)
+    LoadParachute();
+  else
+    LoadParachute();
+}
+
+void ParachutePlugin::LoadParachute(){
+    // Creates the parachute model
+    world_->InsertModelFile("model://plane");
+    
 }
 } // namespace gazebo

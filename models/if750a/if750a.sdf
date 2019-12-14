@@ -439,6 +439,9 @@
       <pubRate>10</pubRate>
       <baroTopic>/baro</baroTopic>
     </plugin>
+    <plugin name='parachute_plugin' filename='libgazebo_parachute_plugin.so'>
+      <robotNamespace/>
+    </plugin>
     <plugin name='mavlink_interface' filename='libgazebo_mavlink_interface.so'>
       <robotNamespace/>
       <imuSubTopic>/imu</imuSubTopic>

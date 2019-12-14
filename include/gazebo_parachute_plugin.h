@@ -70,6 +70,7 @@ protected:
   void getSdfParams(sdf::ElementPtr sdf);
 
 private:
+  void LoadParachute();
   void TriggerCallback(const boost::shared_ptr<const msgs::Int> &_msg);
 
 
