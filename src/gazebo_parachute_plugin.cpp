@@ -87,7 +87,7 @@ void ParachutePlugin::TriggerCallback(const boost::shared_ptr<const msgs::Int> &
 
 void ParachutePlugin::LoadParachute(){
     // Creates the parachute model
-    world_->InsertModelFile("model://plane");
+    world_->InsertModelFile("model://parachute_small");
     
 }
 } // namespace gazebo
