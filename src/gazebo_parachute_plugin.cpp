@@ -81,10 +81,10 @@ void ParachutePlugin::OnUpdate(const common::UpdateInfo&){
     if(!attach_parachute_ && parachute_model){
 
       const ignition::math::Pose3d uavPose = model_->WorldPose();
-      parachute_model->SetWorldPose(ignition::math::Pose3d(uavPose.Pos().X(), uavPose.Pos().Y(), uavPose.Pos().Z()+0.3, 0, 1.57, 0));        // or use uavPose.ros.GetYaw() ?
+      parachute_model->SetWorldPose(ignition::math::Pose3d(uavPose.Pos().X(), uavPose.Pos().Y(), uavPose.Pos().Z()+0.3, 0, 0, 0));        // or use uavPose.ros.GetYaw() ?
 
-      gazebo::physics::JointPtr parachute_joint = world_->Physics()->CreateJoint("ball", model_);
-      parachute_joint->SetName("uav_chute_joint");
+      gazebo::physics::JointPtr parachute_joint = world_->Physics()->CreateJoint("fixed", model_);
+      parachute_joint->SetName("parachute_joint");
       
       // Attach parachute to base_link
       gazebo::physics::LinkPtr base_link = model_->GetLink("base_link");
