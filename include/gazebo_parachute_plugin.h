@@ -79,9 +79,12 @@ private:
   physics::WorldPtr world_;
   event::ConnectionPtr _updateConnection;
 
+  bool attach_parachute_ = false;
+
   const std::string trigger_sub_topic_ = "~/video_stream";
 
   transport::NodePtr node_handle_;
+  transport::PublisherPtr  cmd_kill_pub_;
   transport::SubscriberPtr trigger_sub_;
 
 };     // class GAZEBO_VISIBLE ParachutePlugin

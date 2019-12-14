@@ -64,30 +64,55 @@ void ParachutePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     gzerr << "[gazebo_parachute_plugin] Please specify a robotNamespace.\n";
   }
 
+  // Listen to the update event. This event is broadcast every simulation iteration.
+  _updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&ParachutePlugin::OnUpdate, this, _1));
+
   node_handle_ = transport::NodePtr(new transport::Node());
   node_handle_->Init(namespace_);
 
   trigger_sub_ = node_handle_->Subscribe(trigger_sub_topic_, &ParachutePlugin::TriggerCallback, this);
-
+  cmd_kill_pub_ = node_handle_->Advertise<msgs::Int>("~/kill");
 }
 
 void ParachutePlugin::OnUpdate(const common::UpdateInfo&){
 
-}
+    physics::ModelPtr parachute_model = world_->ModelByName("parachute_small");
 
+    if(!attach_parachute_ && parachute_model){
+
+      const ignition::math::Pose3d uavPose = model_->WorldPose();
+      parachute_model->SetWorldPose(ignition::math::Pose3d(uavPose.Pos().X(), uavPose.Pos().Y(), uavPose.Pos().Z()+0.3, 0, 1.57, 0));        // or use uavPose.ros.GetYaw() ?
+
+      gazebo::physics::JointPtr parachute_joint = world_->Physics()->CreateJoint("ball", model_);
+      parachute_joint->SetName("uav_chute_joint");
+      
+      // Attach parachute to base_link
+      gazebo::physics::LinkPtr base_link = model_->GetLink("base_link");
+      gazebo::physics::LinkPtr parachute_link = parachute_model->GetLink("chute");
+      parachute_joint->Attach(base_link, parachute_link);
+
+      // load the joint, and set up its anchor point
+      parachute_joint->Load(base_link, parachute_link, ignition::math::Pose3d(0, 0, 0.3, 0, 0, 0));
+
+      attach_parachute_ = true;
+    }
+}
 
 void ParachutePlugin::TriggerCallback(const boost::shared_ptr<const msgs::Int> &_msg){
   gzwarn << "Parachute trigger callback: " << _msg->data() << "\n";
-  int enable = _msg->data();
-  if(enable)
-    LoadParachute();
-  else
-    LoadParachute();
+  
+  LoadParachute();
 }
 
 void ParachutePlugin::LoadParachute(){
-    // Creates the parachute model
-    world_->InsertModelFile("model://parachute_small");
-    
+  // Don't create duplicate paracutes
+  if(physics::ModelPtr parachute_model = world_->ModelByName("parachute_small")) return;
+  // Insert parachute model
+  world_->InsertModelFile("model://parachute_small");
+
+  msgs::Int request;
+  request.set_data(0);
+  cmd_kill_pub_->Publish(request);
+  
 }
 } // namespace gazebo
