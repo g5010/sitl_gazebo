@@ -159,8 +159,8 @@
     radius_rotor="0.06"
     time_constant_up="${time_constant_up}"
     time_constant_down="${time_constant_down}"
-    max_rot_velocity="${max_rot_velocity}"
-    motor_number="5"
+    max_rot_velocity="3500"
+    motor_number="4"
     rotor_drag_coefficient="${rotor_drag_coefficient}"
     rolling_moment_coefficient="${rolling_moment_coefficient}"
     mesh="iris_prop"
@@ -182,6 +182,7 @@
     parent="base_link"
     mesh_file="model://standard_vtol/meshes/x8_elevon_left.dae"
     mesh_scale="0.001 0.001 0.001"
+    area="0.5"
     color="Blue">
     <origin xyz="0.0 0.65 0.0" rpy="0 0 0" />
     <axis xyz="0 1 0" />
@@ -199,8 +200,23 @@
     parent="base_link"
     mesh_file="model://standard_vtol/meshes/x8_elevon_right.dae"
     mesh_scale="0.001 0.001 0.001"
+    area="0.5"
     color="Blue">
     <origin xyz="0.0 -0.65 0.0" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
+    <xacro:insert_block name="right_elevon_mesh_origin" />
+  </xacro:control_surface> 
+
+
+  <xacro:control_surface
+    robot_namespace="${namespace}"
+    link_name="elevator"
+    parent="base_link"
+    mesh_file="model://standard_vtol/meshes/x8_elevon_right.dae"
+    mesh_scale="0.001 0.001 0.001"
+    area="0.5"
+    color="Blue">
+    <origin xyz="-1.0 0.0 0.0" rpy="0 0 0" />
     <axis xyz="0 1 0" />
     <xacro:insert_block name="right_elevon_mesh_origin" />
   </xacro:control_surface> 

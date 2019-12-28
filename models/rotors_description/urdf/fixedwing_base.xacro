@@ -199,7 +199,7 @@
 
   <!-- Rotor joint and link -->
   <xacro:macro name="control_surface"
-    params="robot_namespace link_name parent color mesh_file mesh_scale *origin *axis *mesh_origin">
+    params="robot_namespace link_name parent color mesh_file mesh_scale area *origin *axis *mesh_origin">
     <joint name="${link_name}_joint" type="revolute">
       <xacro:insert_block name="origin" />
       <parent link="${parent}" />
@@ -235,15 +235,15 @@
             <cda_stall>-0.9233984055</cda_stall>
             <cma_stall>0</cma_stall>
             <cp>-0.05 0.3 0.05</cp>
-            <area>0.12</area>
+            <area>${area}</area>
             <air_density>1.2041</air_density>
             <forward>1 0 0</forward>
             <upward>0 0 1</upward>
-            <link_name>base_link</link_name>
+            <link_name>${parent}</link_name>
             <control_joint_name>
                ${link_name}_joint
             </control_joint_name>
-            <control_joint_rad_to_cl>-0.5</control_joint_rad_to_cl>
+            <control_joint_rad_to_cl>-1.0</control_joint_rad_to_cl>
          </plugin>
     </gazebo>
     <gazebo reference="${link_name}">
