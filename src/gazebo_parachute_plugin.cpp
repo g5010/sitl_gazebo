@@ -64,6 +64,9 @@ void ParachutePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     gzerr << "[gazebo_parachute_plugin] Please specify a robotNamespace.\n";
   }
 
+  getSdfParam<std::string>(_sdf, "commandSubTopic", trigger_sub_topic_, trigger_sub_topic_);
+
+
   // Listen to the update event. This event is broadcast every simulation iteration.
   _updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&ParachutePlugin::OnUpdate, this, _1));
 
