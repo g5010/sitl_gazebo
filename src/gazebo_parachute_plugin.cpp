@@ -38,7 +38,7 @@
   * @author Jaeyoung Lim <jaeyoung@auterion.com>
   */
 
-#include <gazebo_parachute_plugin.h>
+#include "gazebo_parachute_plugin.h"
 
 namespace gazebo {
 GZ_REGISTER_MODEL_PLUGIN(ParachutePlugin)
@@ -64,6 +64,11 @@ void ParachutePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
     gzerr << "[gazebo_parachute_plugin] Please specify a robotNamespace.\n";
   }
 
+  if (_sdf->HasElement("motorNumber"))
+    motor_number_ = _sdf->GetElement("motorNumber")->Get<int>();
+  else
+    gzerr << "[gazebo_motor_model] Please specify a motorNumber.\n";
+
   getSdfParam<std::string>(_sdf, "commandSubTopic", trigger_sub_topic_, trigger_sub_topic_);
 
 
@@ -73,8 +78,7 @@ void ParachutePlugin::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf)
   node_handle_ = transport::NodePtr(new transport::Node());
   node_handle_->Init(namespace_);
 
-  trigger_sub_ = node_handle_->Subscribe(trigger_sub_topic_, &ParachutePlugin::TriggerCallback, this);
-  cmd_kill_pub_ = node_handle_->Advertise<msgs::Int>("~/kill");
+  trigger_sub_ = node_handle_->Subscribe("~/" + model_->GetName() + trigger_sub_topic_, &ParachutePlugin::VelocityCallback, this);
 }
 
 void ParachutePlugin::OnUpdate(const common::UpdateInfo&){
@@ -107,6 +111,13 @@ void ParachutePlugin::TriggerCallback(const boost::shared_ptr<const msgs::Int> &
   LoadParachute();
 }
 
+void ParachutePlugin::VelocityCallback(CommandMotorSpeedPtr &rot_velocities) {
+  if(rot_velocities->motor_speed_size() < motor_number_) {
+    std::cout  << "You tried to access index " << motor_number_
+      << " of the MotorSpeed message array which is of size " << rot_velocities->motor_speed_size() << "." << std::endl;
+  } else ref_motor_rot_vel_ = std::min(static_cast<double>(rot_velocities->motor_speed(motor_number_)), static_cast<double>(max_rot_velocity_));
+}
+
 void ParachutePlugin::LoadParachute(){
   // Don't create duplicate paracutes
   if(physics::ModelPtr parachute_model = world_->ModelByName("parachute_small")) return;
@@ -115,7 +126,6 @@ void ParachutePlugin::LoadParachute(){
 
   msgs::Int request;
   request.set_data(0);
-  cmd_kill_pub_->Publish(request);
   
 }
 } // namespace gazebo

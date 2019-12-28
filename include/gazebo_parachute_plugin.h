@@ -45,6 +45,7 @@
 #include <common.h>
 #include <sdf/sdf.hh>
 
+#include <gazebo/common/common.hh>
 #include <gazebo/common/Plugin.hh>
 #include <gazebo/gazebo.hh>
 #include <gazebo/util/system.hh>
@@ -52,11 +53,16 @@
 #include <gazebo/msgs/msgs.hh>
 #include <gazebo/physics/physics.hh>
 #include <ignition/math.hh>
+#include "CommandMotorSpeed.pb.h"
+
 
 #include <Odometry.pb.h>
 
 namespace gazebo
 {
+
+typedef const boost::shared_ptr<const mav_msgs::msgs::CommandMotorSpeed> CommandMotorSpeedPtr;
+
 
 class GAZEBO_VISIBLE ParachutePlugin : public ModelPlugin
 {
@@ -67,11 +73,11 @@ public:
 protected:
   virtual void Load(physics::ModelPtr model, sdf::ElementPtr sdf);
   virtual void OnUpdate(const common::UpdateInfo&);
-  void getSdfParams(sdf::ElementPtr sdf);
 
 private:
   void LoadParachute();
   void TriggerCallback(const boost::shared_ptr<const msgs::Int> &_msg);
+  void VelocityCallback(CommandMotorSpeedPtr &rot_velocities);
 
 
   std::string namespace_;
@@ -80,11 +86,13 @@ private:
   event::ConnectionPtr _updateConnection;
 
   bool attach_parachute_ = false;
+  double max_rot_velocity_ = 3500;
+  double ref_motor_rot_vel_;
+  int motor_number_;
 
-  const std::string trigger_sub_topic_ = "~/video_stream";
+  std::string trigger_sub_topic_ = "~/video_stream";
 
   transport::NodePtr node_handle_;
-  transport::PublisherPtr  cmd_kill_pub_;
   transport::SubscriberPtr trigger_sub_;
 
 };     // class GAZEBO_VISIBLE ParachutePlugin
