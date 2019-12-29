@@ -125,14 +125,14 @@
 
   <!-- Rotor joint and link -->
   <xacro:macro name="control_surface"
-    params="robot_namespace link_name parent color mesh_file mesh_scale area control_joint_rad_to_cl a0 cpx cpy cpz upx upy upz *origin *joint_origin *axis *mesh_origin">
+    params="robot_namespace link_name parent color mesh_file mesh_scale area joint_limit control_joint_rad_to_cl a0 cpx cpy cpz upx upy upz *origin *joint_origin *axis *mesh_origin">
     <joint name="${link_name}_joint" type="revolute">
       <xacro:insert_block name="joint_origin" />
       <parent link="${parent}" />
       <child link="${link_name}" />
       <!-- <axis xyz="0 0 1" /> -->
       <xacro:insert_block name="axis" />
-      <limit effort="1000" velocity="1000.0" lower="-0.53" upper="0.53" />
+      <limit effort="1000" velocity="1000.0" lower="-${joint_limit}" upper="${joint_limit}" />
       <!-- <dynamics damping="1.0"/> -->
     </joint>
     <link name="${link_name}">

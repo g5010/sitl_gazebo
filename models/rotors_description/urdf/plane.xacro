@@ -122,7 +122,8 @@
     cpz="0.05"
     upx="0"
     upy="0"
-    upz="1">
+    upz="1"
+    joint_limit="0.53">
     <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
     <axis xyz="0 1 0" />
     <xacro:insert_block name="left_aileron_joint_origin" />
@@ -145,7 +146,8 @@
     cpz="0.05"
     upx="0"
     upy="0"
-    upz="1">
+    upz="1"
+    joint_limit="0.53">
     <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
     <axis xyz="0 1 0" />
     <xacro:insert_block name="right_aileron_joint_origin" />
@@ -168,7 +170,8 @@
     cpz="0.0"
     upx="0"
     upy="0"
-    upz="1">
+    upz="1"
+    joint_limit="0.53">
     <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
     <axis xyz="0 1 0" />
       <xacro:insert_block name="elevator_joint_origin" />
@@ -185,14 +188,15 @@
     mesh_scale="0.1 0.1 0.1"
     color="Blue"
     area="0.02"
-    control_joint_rad_to_cl="-4.0"
+    control_joint_rad_to_cl="-0.5"
     a0="0.0"
     cpx="-0.5"
     cpy="0"
     cpz="0.05"
     upx="0"
     upy="1"
-    upz="0">
+    upz="0"
+    joint_limit="0.53">
     <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
     <axis xyz="0 0 1" />
     <xacro:insert_block name="rudder_joint_origin" />
